@@ -21,3 +21,16 @@ Help:
 ## Usage
 
     ./ompsort
+
+## Report
+
+Dependencies:
+- TexLive Full
+  
+Build the report:
+
+    make report
+
+Visualization:
+
+    [PDF VIEWER] ./report/report.pdf

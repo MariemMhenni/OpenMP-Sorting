@@ -51,3 +51,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# LaTeX files
+*.log
+*.aux
+*.toc
+*.out

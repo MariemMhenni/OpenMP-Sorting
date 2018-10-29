@@ -76,6 +76,18 @@ SRCDIRS   = src
 # If not specified, current directory name or `a.out' will be used.
 PROGRAM   = ompsort
 
+## Report section.
+##==========================================================================
+
+# LaTeX compiler.
+LATEX = pdflatex
+
+# Report directory name.
+REPORT_DIR = report
+
+# Report name (without extension).
+REPORT = $(REPORT_DIR)/report
+
 ## Implicit Section: change the following only when necessary.
 ##==========================================================================
 
@@ -237,10 +249,16 @@ endif
 endif
 
 clean:
-	$(RM) $(OBJS) $(PROGRAM) $(PROGRAM).exe
+	$(RM) $(OBJS) $(PROGRAM) $(PROGRAM).exe $(REPORT).aux $(REPORT).log $(REPORT).out $(REPORT).toc
 
 distclean: clean
 	$(RM) $(DEPS) TAGS
+
+# Create the report (2-times to generate the TOC).
+$(REPORT).pdf: $(REPORT).tex
+	$(LATEX) -output-directory $(REPORT_DIR) $(REPORT).tex
+	$(LATEX) -output-directory $(REPORT_DIR) $(REPORT).tex
+report: $(REPORT).pdf
 
 # Show help.
 help:
