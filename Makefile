@@ -57,7 +57,7 @@
 ##==========================================================================
 
 # The pre-processor and compiler options.
-MY_CFLAGS = -Wall -Wextra -fopenmp -I./src/
+MY_CFLAGS = -Wall -Wextra -fopenmp -I./src/ --std=c99
 
 # The linker options.
 MY_LIBS   =
