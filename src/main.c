@@ -10,16 +10,10 @@ static int N;
 /** Size of one table (one block). */
 static int K;
 
-/**
- * Fill a table with random values.
- * @param tab the table to fill.
- * @param size the size of the table.
- */
-void generator(double tab[], int size)
-{
-    for (int i = 0; i < size; i++)
-        tab[i] = rand() / 3.; /* Generate real numbers. */
-}
+
+void tri(double *tab, int size);
+void generator(double tab[], int size);
+
 
 int main(int argc, char *argv[])
 {
@@ -34,6 +28,46 @@ int main(int argc, char *argv[])
     double blocks[N][K];
     for (int i = 0; i < N; i++)
         generator(blocks[i], K);
-
+	
+    tri(blocks[0],K);
+	
+   
+	
     return 0;
 }
+
+/**
+ * Fill a table with random values.
+ * @param tab the table to fill.
+ * @param size the size of the table.
+ */
+void generator(double tab[], int size)
+{
+    for (int i = 0; i < size; i++)
+        tab[i] = rand()/3.33; /* Generate real numbers. */
+}
+/**
+ * Bubble sort
+ */
+
+void tri(double *tab, int size)
+{
+    int i,j=0, test=1, tmp;
+    
+    while(test)
+    {
+        test=0;
+        for(i=0;i<size-j;i++)
+        {
+            if(tab[i+1]<tab[i])
+            {
+                tmp=tab[i];
+                tab[i]=tab[i+1];
+                tab[i+1]=tmp;
+                test=1;
+            }
+         }
+     }
+}
+
+
