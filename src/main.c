@@ -138,28 +138,25 @@ void tri_parallele(int N, int K, double blocks[N][K])
   
      
     
-    for(int j=1;j<N;j++)
+    for(int j=0;j<N;j++)
     {
-        k=1+(j%2);
+        k=(j%2);
         for(int i=0;i<N/2;i++)
         {
-            b1=(1+(k+2*i))%N;
-            b2=(1+(K+2*i+1))%N;
-            if(b1!=b2) //on peut pas merge 2 blocks si c'est le meme
-            {    
-                if(b1<b2)
-                {
-                    min=b1;
-                    max=b2;
-                }
-                else
-                {
-                    min=b2;
-                    max=b1;
-                }
-                tri_merge(blocks[min],blocks[max],K);
-                
+            b1=(k+2*i)%N;
+            b2=(k+2*i+1)%N;
+            
+            if(b1<b2)
+           {
+               min=b1;
+               max=b2;
+           }
+           else
+           {
+               min=b2;
+                max=b1;
             }
+            tri_merge(blocks[min],blocks[max],K);
         }
     }
 }
