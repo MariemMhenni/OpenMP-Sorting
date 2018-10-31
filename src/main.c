@@ -28,11 +28,11 @@ int main(int argc, char *argv[])
     double blocks[N][K];
     for (int i = 0; i < N; i++)
         generator(blocks[i], K);
-	
-    tri(blocks[0],K);
-	
-   
-	
+        
+    
+    for (int i = 0; i < N; i++)
+        tri(blocks[i],K);
+        
     return 0;
 }
 
@@ -52,7 +52,8 @@ void generator(double tab[], int size)
 
 void tri(double *tab, int size)
 {
-    int i,j=0, test=1, tmp;
+    int i,j=0, test=1;
+    double tmp;
     
     while(test)
     {
@@ -67,7 +68,8 @@ void tri(double *tab, int size)
                 test=1;
             }
          }
-     }
+      }
 }
+
 
 
