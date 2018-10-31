@@ -29,7 +29,7 @@ void generator(int **tab)
 {
 	int i,j;
 	srand(time(NULL));
-	#pragma omp paralle for
+	#pragma omp parallel for
 		for(i=0;i<N;i++)
 		{
 			#pragma omp parallel for
