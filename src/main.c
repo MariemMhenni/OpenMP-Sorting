@@ -82,7 +82,7 @@ void sort_parallel(int N, int K, double blocks[N][K])
         sort(blocks[i],K);
 
     /* Merge all sorted blocks to have a sorted database, in parallel. */
-    for(int j = 0; j < N; j++)
+    for (int j = 0; j < N; j++)
     {
         int k = (j % 2); /* Process blocks two by two. */
         #pragma omp parallel for
@@ -103,9 +103,11 @@ int main(int argc, char *argv[])
     if ((N = atoi(argv[1])) < 1 || (K = atoi(argv[2])) < 1)
         return fprintf(stderr, "Usage: %s [NUMBER OF BLOCKS > 0] [SIZE OF ONE BLOCK > 0]\n", argv[0]), 1;
     srand(time(NULL));
+    double t = omp_get_wtime();
 
     /* Database to sort: N tables of K random elements each. */
     double blocks[N][K];
+    #pragma omp parallel for
     for (int i = 0; i < N; i++)
         generator(blocks[i], K);
     
@@ -113,6 +115,7 @@ int main(int argc, char *argv[])
     sort_parallel(N, K, blocks);
    
     /* Display the database. */
+    printf("Time elapsed: \n%f\nDatabase:\n", omp_get_wtime() - t);
     for (int i = 0; i < N; i++)
     {
         for (int j = 0; j < K; j++)
