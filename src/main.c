@@ -153,7 +153,7 @@ void tri_parallele(int N, int K, double blocks[N][K])
            }
            else
            {
-               min=b2;
+                min=b2;
                 max=b1;
             }
             tri_merge(blocks[min],blocks[max],K);
