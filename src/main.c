@@ -74,7 +74,7 @@ void sort_merge(double tab1[], double tab2[], int size)
  * @param K Size of one block.
  * @param blocks Tables to sort.
  */
-void sort_parallel(int N, int K, double blocks[N][K])
+void sort_parallel(int N, int K, double ** blocks)
 {
     /* Sort each block individually, in parallel. */
     #pragma omp parallel for
@@ -106,10 +106,9 @@ int main(int argc, char *argv[])
     double t = omp_get_wtime();
 
     /* Database to sort: N tables of K random elements each. */
-    double blocks[N][K];
-    #pragma omp parallel for
+    double ** blocks = malloc(N * sizeof(*blocks));
     for (int i = 0; i < N; i++)
-        generator(blocks[i], K);
+        generator((blocks[i] = malloc(K * sizeof(**blocks))), K);
     
     /* Sort the database in parallel. */
     sort_parallel(N, K, blocks);
@@ -121,6 +120,11 @@ int main(int argc, char *argv[])
         for (int j = 0; j < K; j++)
             printf("%f\n", blocks[i][j]);
     }
+    
+    /* Free ressources. */
+    for (int i = 0; i < N; i++)
+        free(blocks[i]);
+    free(blocks);
 
     return 0;
 }
