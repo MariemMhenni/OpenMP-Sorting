@@ -97,23 +97,25 @@
 \tableofcontents
 
 \section{Introduction}
-    
-    L'objectif de ce projet est, dans un premier temps, d'implémenter en c, un algorithme de trie pour une grande base de données de manière à ce que l'efficacité soit la plus grande possible. 
-    
-    Dans un second temps, il faut calculer le temps d'exécution de notre programme en fonction de plusieurs paramètres tels que le nombre de threads utilisé ou la taille des données.
 
-    Comme contraintes nous avions :
+Durant la réalisation de ce projet, nous avions comme objectifs, dans un premier
+temps, d'implémenter en langage C un algorithme de tri parallèle destiné à trier
+une grande base de données. Dans un second temps, il nous fallait effectuer des
+mesures du temps d'exécution de notre programme en fonction de plusieurs
+paramètres, tels que le nombre de threads utilisés ou encore la taille des données.
+
+Plusieurs contraintes nous étaient imposées :
 \begin{itemize}  
-\item{le squelette du programme : donné dans l'énoncé.}
-    
-\item{les trois fonctions :
-    \begin{description}
-    \item[generator :] {remplit les tableaux avec des nombres réels.}
-    \item[tri :] {prend en entrée un tableau à une dimension de taille K non triés et le renvoie trié et enfin une fonction.}
-    \item[tri-merge :] {prend en entrée deux tableaux à une dimension de taille K triés et renvoie deux tableaux triés, toutes les valeurs du premier tableau seront inférieures à celles du deuxième.}
-    \end{description}}
-\item{le parallélisme avec OpenMP : nous avons donc utilisé la bibliothèque de programmation parallèle OpenMP.}
+    \item{Le squelette de l'algorithme à suivre était donné dans l'énoncé ;}
+    \item{Nous avions à utiliser la bibliothèque de programmation parallèle OpenMP pour paralléliser notre algorithme;}
+    \item{Nous avions trois fonctions principales à implémenter de la manière suivante :}
+        \begin{description}
+            \item[generator() :] {remplit un tableau de taille $K$ avec des nombres réels aléatoires;}
+            \item[tri() :] {tri un tableau de taille $K$ ;}
+            \item[tri-merge() :] {à partir de deux tableaux chacun de taille $K$ et trié, renvoie deux tableaux triés vérifiant que toutes les valeurs du premier tableau sont inférieures à celles du deuxième.}
+        \end{description}
 \end{itemize}
+
 \section{Développement du programme}
 
     Dans cette partie nous allons vous expliquer les choix que nous avons fait pour implémenter l'algorithme demandé ainsi que les modifications qui ont dû être effectuées.
