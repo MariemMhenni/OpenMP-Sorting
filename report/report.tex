@@ -4,6 +4,7 @@
 % Package and configuration.
 
 % Language and encoding packages.
+\usepackage[utf8]{inputenc}
 \usepackage[french]{babel}
 \usepackage[T1]{fontenc}
 
@@ -34,13 +35,20 @@
 % Footer.
 \usepackage{fancyhdr}
 \pagestyle{fancy}
+\usepackage{lastpage}
 % Clear headers and footers.
-\fancyhead{}
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
+\fancyhead[]{}
+\fancyhead[R]{\includegraphics[scale=0.5]{logoIsty.png}}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{1pt}
 % Define footers.
+\fancyfoot[C]{\textbf{\thepage/\pageref{LastPage}}}
 \fancyfoot[RE,LO]{Pierre AYOUB}
 \fancyfoot[RE,RO]{Océane FLAMANT}
+
+%indentation/espacement 2 paragraphe
+\setlength{\parindent}{0.5cm}
+\setlength{\parskip}{1ex plus 0.25ex minus 0.2ex}
 
 \begin{document}
 
@@ -53,26 +61,47 @@
 
 \newpage
 
-\begin{abstract}
-    L'objecif de ce projet est la création d'un programme, utilisant la
-    bibliothèque de programmation parallèle OpenMP, permettant de trier une
-    large base de données en un temps minimum.
-\end{abstract}
+\section{Introduction}
+    
+    L'objectif de ce projet est, dans un premier temps, d'implémenter en c, un algorithme de trie pour une grande base de données de manière à ce que l'efficacité soit la plus grande possible. 
+    
+    Dans un second temps, il faut calculer le temps d'exécution de notre programme en fonction de plusieurs paramètres tels que le nombre de threads utilisé ou la taille des données.
 
+    Comme contraintes nous avions :
+\begin{itemize}  
+\item{le squelette du programme : donné dans l'énoncé.}
+    
+\item{les trois fonctions :
+    \begin{description}
+    \item[generator :] {remplit les tableaux avec des nombres réels.}
+    \item[tri :] {prend en entrée un tableau à une dimension de taille K non triés et le renvoie trié et enfin une fonction.}
+    \item[tri-merge :] {prend en entrée deux tableaux à une dimension de taille K triés et renvoie deux tableaux triés, toutes les valeurs du premier tableau seront inférieures à celles du deuxième.}
+    \end{description}}
+\item{le parallélisme avec OpenMP : nous avons donc utilisé la bibliothèque de programmation parallèle OpenMP.}
+\end{itemize}
 \section{Développement du programme}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua.
+    Dans cette partie nous allons vous expliquer les choix que nous avons fait pour implémenter l'algorithme demandé ainsi que les modifications qui ont dû être effectuées.
 
-\subsection{Architecture}
+\subsection{Structure et choix}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua.
+    La structure globale suit l'algorithme défini dans l'énoncé mais nous allons vous détailler, dans cette partie, certaines partie du programme.
+    
+    Avant d'implémenter les fonctions, nous avons de créer des macroconstante qui permettent de calculer le minimum et le maximum dans le but d'optimiser et de faciliter la compréhension du code. Nous avons aussi mis les tailles des données en static car elles ne doivent pas être modifiées au cours de l'exécution du programme.
+    
+    Pour l'algorithme de tri nous avons choisi le tri à bulles car même si ce n'est pas le plus rapide que l'on connaît aujourd'hui, il est simple à comprendre et à implémenter et il n'a pas besoin de tableau annexe pour que le tri s'effectue. De plus nous avons choisi de nous concentrer sur le parallélisme du programme et la différence de son temps d'exécution suivant les différents critères, non pas sur le temps d'exécution global.
 
-\subsection{Difficultées rencontrées}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua.
+\subsection{Modification de l'algorithme}
+
+    Nous avons rencontré quelques déconvenues avec l'algorithme donné. 
+    
+    En effet une fois nos fonctions réalisées et vérifiées nous avons lancé le programme et le résultat obtenu n'était pas le bon. Les valeurs contenues dans les tableaux étaient triés mais pour les tableaux entre cela n'était pas le cas. Nous avons donc dû effectuer de léger changement.
+    
+    Tout d'abord, chaque boucle for commence à 0 et s'arrête à N.
+    Ensuite nous avons supprimé les +1 des variables k, b1 et b2 car les boucles commencent à 0.Et enfin pour b2, le K est devenu k. 
+
+    En résumé, k=(j\%2) ; b1=1+(k+2*i)\%N -> b1=(k+2*i)\%N ; b2=1+(K+2*i+1)\%N -> b2=(k+2*i+1)\%N.
 
 \section{Performances}
 
