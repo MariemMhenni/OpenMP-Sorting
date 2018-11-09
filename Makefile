@@ -85,7 +85,10 @@ LATEX = pdflatex
 # Report directory name.
 REPORT_DIR = report
 
-# Report name (without extension).
+# Report file name.
+REPORT_NAME = report.tex
+
+# Report full path (without extension).
 REPORT = $(REPORT_DIR)/report
 
 ## Implicit Section: change the following only when necessary.
@@ -256,8 +259,8 @@ distclean: clean
 
 # Create the report (2-times to generate the TOC).
 $(REPORT).pdf: $(REPORT).tex
-	$(LATEX) -output-directory $(REPORT_DIR) $(REPORT).tex
-	$(LATEX) -output-directory $(REPORT_DIR) $(REPORT).tex
+	cd $(REPORT_DIR) && $(LATEX) $(REPORT_NAME)
+	cd $(REPORT_DIR) && $(LATEX) $(REPORT_NAME)
 report: $(REPORT).pdf
 
 # Show help.
