@@ -22,7 +22,7 @@
 \usepgfplotslibrary{units}
 % Define style for charts.
 \pgfplotsset{custom plot/.style={
-        width            = 12cm,
+        width            = 13cm,
         height           = 9cm,
         axis lines       = left,
         grid             = major,
@@ -152,7 +152,7 @@ incididunt ut labore et dolore magna aliqua.
         \begin{tikzpicture}
             \begin{loglogaxis} [
                     custom plot,
-                    title = $N \text{ = } \frac{e(l(N*K)}{l(10))}$ ; $K \text{ = } \frac{(N*K)}{N}$ ; $\text{OMP\_NUM\_THREADS = } \mathopen|\text{CPU cores}\mathclose|$,
+                    title = $N \text{ = } \exp(\log_{10}(N*K))$ ; $K \text{ = } \frac{(N*K)}{N}$ ; $\text{OMP\_NUM\_THREADS = } \mathopen|\text{CPU cores}\mathclose|$,
                 ]
                 \addplot+[custom line] table [
                     x       = data size,
@@ -197,9 +197,9 @@ incididunt ut labore et dolore magna aliqua.
             \begin{loglogaxis} [
                     custom plot,
                     legend pos = north west,
-                    title = $N \text{ = } \frac{e(l(N*K)}{l(10))}$ ; $K \text{ = } \frac{(N*K)}{N}$,
+                    title = $N \text{ = } \exp(\log_{10}(N*K))$ ; $K \text{ = } \frac{(N*K)}{N}$,
                 ]
-                \foreach \i in {1,4,8,16}
+                \foreach \i in {1,4,16,64}
                     \addplot+[custom lines] table [
                         x       = data size,
                         y       = exec time omp_num_threads eq \i,
@@ -207,8 +207,8 @@ incididunt ut labore et dolore magna aliqua.
                     ] {charts/chart3.csv};
                 \addlegendentry{$\text{OMP\_NUM\_THREADS} = 1$};
                 \addlegendentry{$\text{OMP\_NUM\_THREADS} = 4$};
-                \addlegendentry{$\text{OMP\_NUM\_THREADS} = 8$};
                 \addlegendentry{$\text{OMP\_NUM\_THREADS} = 16$};
+                \addlegendentry{$\text{OMP\_NUM\_THREADS} = 64$};
             \end{loglogaxis}
         \end{tikzpicture}
         \caption{Temps d'exécution en fonction de la taille des données et du nombre de threads}
