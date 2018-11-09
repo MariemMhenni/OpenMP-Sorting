@@ -4,8 +4,8 @@
 % Package and configuration.
 
 % Language and encoding packages.
-\usepackage[utf8]{inputenc}
 \usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
 % Mathematics package.
@@ -67,22 +67,20 @@
 \usepackage[hidelinks]{hyperref}
 
 % Footer.
+\usepackage{lastpage}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\usepackage{lastpage}
 % Clear headers and footers.
-\fancyhead[]{}
-\fancyhead[R]{\includegraphics[scale=0.5]{logoIsty.png}}
-\renewcommand{\headrulewidth}{1pt}
-\renewcommand{\footrulewidth}{1pt}
+\fancyhead{}
+% \renewcommand{\headrulewidth}{0pt}
+% \renewcommand{\footrulewidth}{0pt}
 % Define footers.
-\fancyfoot[C]{\textbf{\thepage/\pageref{LastPage}}}
 \fancyfoot[RE,LO]{Pierre AYOUB}
+\fancyfoot[RE,CO]{\text{\thepage} sur \pageref{LastPage}}
 \fancyfoot[RE,RO]{Océane FLAMANT}
 
-%indentation/espacement 2 paragraphe
-\setlength{\parindent}{0.5cm}
-\setlength{\parskip}{1ex plus 0.25ex minus 0.2ex}
+% Paragraph.
+\setlength{\parskip}{1ex}
 
 \begin{document}
 
@@ -96,7 +94,7 @@
     \includegraphics[scale=0.3]{pictures/isty.jpg}
 \end{figure}
 
-\newpage
+\tableofcontents
 
 \section{Introduction}
     
