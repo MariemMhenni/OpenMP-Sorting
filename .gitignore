@@ -57,3 +57,7 @@ dkms.conf
 *.aux
 *.toc
 *.out
+
+# GDB files
+.gdb_history
+.gdbinit
