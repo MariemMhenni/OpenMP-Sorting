@@ -10,6 +10,7 @@
 
 % Mathematics package.
 \usepackage{amsmath}
+\usepackage{amstext}
 
 % Figures package.
 \usepackage{graphicx}
@@ -17,7 +18,40 @@
 
 % Charts package.
 \usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
 \usepgfplotslibrary{units}
+% Define style for charts.
+\pgfplotsset{custom plot/.style={
+        width            = 12cm,
+        height           = 9cm,
+        axis lines       = left,
+        grid             = major,
+        grid style       = {dashed},
+        legend pos       = north west,
+        ylabel           = Temps d'exécution,
+        y unit           = \si{\second},
+        enlarge y limits = upper,
+        xlabel           = Taille des données,
+        x unit           = N \text{ blocs}*K \text{ réels double précision},
+        xticklabel style = {
+            /pgf/number format/precision = 3,
+        },
+        log ticks with fixed point,
+    }
+}
+\pgfplotsset{custom lines/.style={
+        smooth,
+        tension = 0.1,
+    }
+}
+\pgfplotsset{custom line/.style={
+        custom lines,
+        color   = red,
+        mark options = {
+            fill = black,
+        }
+    }
+}
 
 % Symbols package.
 \usepackage{siunitx}
@@ -116,46 +150,74 @@ incididunt ut labore et dolore magna aliqua.
 \begin{figure}
     \begin{center}
         \begin{tikzpicture}
-            \begin{semilogxaxis} [
-                    width          = 12cm,
-                    height         = 7cm,
-                    axis lines     = left,
-                    grid           = major,
-                    grid style     = {dashed},
-                    legend pos     = north west,
-                    % legend style = {at={(0.2,-0.3)}},
-                    ylabel         = Temps d'exécution,
-                    y unit         = \si{\second},
-                    xlabel         = Taille des données (N*K),
-                    xtick          = data,
-                    xticklabel style = {
-                        /pgf/number format/precision = 3,
-                    },
-                    log ticks with fixed point,
+            \begin{loglogaxis} [
+                    custom plot,
+                    title = $N \text{ = } \frac{e(l(N*K)}{l(10))}$ ; $K \text{ = } \frac{(N*K)}{N}$ ; $\text{OMP\_NUM\_THREADS = } \mathopen|\text{CPU cores}\mathclose|$,
                 ]
-                \addplot+[
-                    smooth,
-                    tension = 0.1,
-                    color   = red,
-                    mark options = {
-                        fill = black,
-                    }
-                ]
-                table [
+                \addplot+[custom line] table [
                     x       = data size,
                     y       = exec time,
                     col sep = comma,
-                ] {charts/runs.csv};
-                \legend{Temps d'exécution}
-            \end{semilogxaxis}
+                ] {charts/chart1.csv};
+            \end{loglogaxis}
         \end{tikzpicture}
-        \caption{Temps d'exécution en fonction de la taille des données (N*K)}
+        \caption{Temps d'exécution en fonction de la taille des données}
         \label{time-to-data-size}
     \end{center}
 \end{figure}
 
-\subsection{Perspectives d'amélioration}
+\begin{figure}
+    \begin{center}
+        \begin{tikzpicture}
+            \begin{loglogaxis} [
+                    custom plot,
+                    title = $\text{OMP\_NUM\_THREADS = } \mathopen|\text{CPU cores}\mathclose|$ ; $K \text{ = } \frac{(N*K)}{N}$,
+                ]
+                \foreach \i in {2,16,64,256,1024}
+                    \addplot+[custom lines] table [
+                        x       = data size,
+                        y       = exec time n eq \i,
+                        col sep = comma,
+                    ] {charts/chart2.csv};
+                \addlegendentry{$N = 2$};
+                \addlegendentry{$N = 16$};
+                \addlegendentry{$N = 64$};
+                \addlegendentry{$N = 256$};
+                \addlegendentry{$N = 1024$};
+            \end{loglogaxis}
+        \end{tikzpicture}
+        \caption{Temps d'exécution en fonction de la taille des données et du nombre de blocs}
+        \label{time-to-data-size-and-blocks}
+    \end{center}
+\end{figure}
 
+\begin{figure}
+    \begin{center}
+        \begin{tikzpicture}
+            \begin{loglogaxis} [
+                    custom plot,
+                    legend pos = north west,
+                    title = $N \text{ = } \frac{e(l(N*K)}{l(10))}$ ; $K \text{ = } \frac{(N*K)}{N}$,
+                ]
+                \foreach \i in {1,4,8,16}
+                    \addplot+[custom lines] table [
+                        x       = data size,
+                        y       = exec time omp_num_threads eq \i,
+                        col sep = comma,
+                    ] {charts/chart3.csv};
+                \addlegendentry{$\text{OMP\_NUM\_THREADS} = 1$};
+                \addlegendentry{$\text{OMP\_NUM\_THREADS} = 4$};
+                \addlegendentry{$\text{OMP\_NUM\_THREADS} = 8$};
+                \addlegendentry{$\text{OMP\_NUM\_THREADS} = 16$};
+            \end{loglogaxis}
+        \end{tikzpicture}
+        \caption{Temps d'exécution en fonction de la taille des données et du nombre de threads}
+        \label{time-to-data-size-and-threads}
+    \end{center}
+\end{figure}
+
+\subsection{Perspectives d'amélioration}
+    
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
 incididunt ut labore et dolore magna aliqua.
 
