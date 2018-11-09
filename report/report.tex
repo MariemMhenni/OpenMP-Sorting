@@ -16,6 +16,10 @@
 
 % Charts package.
 \usepackage{pgfplots}
+\usepgfplotslibrary{units}
+
+% Symbols package.
+\usepackage{siunitx}
 
 % Formatter package.
 %% Page break between section.
@@ -79,6 +83,47 @@ incididunt ut labore et dolore magna aliqua.
 
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
 incididunt ut labore et dolore magna aliqua.
+
+\begin{figure}
+    \begin{center}
+        \begin{tikzpicture}
+            \begin{semilogxaxis} [
+                    width          = 12cm,
+                    height         = 7cm,
+                    axis lines     = left,
+                    grid           = major,
+                    grid style     = {dashed},
+                    legend pos     = north west,
+                    % legend style = {at={(0.2,-0.3)}},
+                    ylabel         = Temps d'exécution,
+                    y unit         = \si{\second},
+                    xlabel         = Taille des données (N*K),
+                    xtick          = data,
+                    xticklabel style = {
+                        /pgf/number format/precision = 3,
+                    },
+                    log ticks with fixed point,
+                ]
+                \addplot+[
+                    smooth,
+                    tension = 0.1,
+                    color   = red,
+                    mark options = {
+                        fill = black,
+                    }
+                ]
+                table [
+                    x       = data size,
+                    y       = exec time,
+                    col sep = comma,
+                ] {charts/runs.csv};
+                \legend{Temps d'exécution}
+            \end{semilogxaxis}
+        \end{tikzpicture}
+        \caption{Temps d'exécution en fonction de la taille des données (N*K)}
+        \label{time-to-data-size}
+    \end{center}
+\end{figure}
 
 \subsection{Perspectives d'amélioration}
 
