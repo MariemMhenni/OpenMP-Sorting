@@ -128,7 +128,7 @@ ont dû être effectuées.
 
 \subsection{Structure du programme}
 
-Nos fonctions \emph{generator()} et \emph{tri()} suivent scrupuleusement
+Nos fonctions \emph{generator()} et \emph{tri-merge()} suivent scrupuleusement
 l'algorithme défini dans l'énoncé. Cependant, nous avions le libre arbitre
 concernant l'implémentation de la fonction \emph{tri()}.
     
@@ -145,12 +145,12 @@ Nous avons rencontré quelques déconvenues avec l'algorithme donné. En effet, 
 fois nos fonctions réalisées et vérifiées, nous avons lancé le programme et le
 résultat obtenu n'était pas le bon. Les valeurs contenues dans les tableaux
 étaient triés mais les tableaux n'étais pas dans l'odre attendu. Nous avons donc
-dû effectuer une légère adaptation : en effet, en C, les indices commencent à $0$
-et non à $1$, comme donné dans l'algorithme.
+dû effectuer de légères adaptations. : en effet, 
 
-Tout d'abord, chaque \emph{boucle for} commence à $0$ et s'arrête à $N-1$.
-Ensuite nous avons supprimé les $+1$ des variables $k$, $b1$ et $b2$ car les
-boucles commencent à 0. Enfin, pour $b2$, le $K$ est devenu $k$ (ce dernier
+Tout d'abord, en C, les indices commencent à $0$ et non à $1$, comme donné dans
+l'algorithme donc pour chaque \emph{boucle for} commence à $0$ et s'arrête à 
+$N-1$. Ensuite nous avons supprimé les $+1$ des variables $k$, $b1$ et $b2$ car 
+les boucles commencent à 0. Enfin, pour $b2$, le $K$ est devenu $k$ (ce dernier
 étant une correction d'une erreur de l'énoncé). 
 
 En résumé :
