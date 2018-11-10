@@ -118,27 +118,43 @@ Plusieurs contraintes nous étaient imposées :
 
 \section{Développement du programme}
 
-    Dans cette partie nous allons vous expliquer les choix que nous avons fait pour implémenter l'algorithme demandé ainsi que les modifications qui ont dû être effectuées.
+Dans cette partie, nous allons expliquer et justifier les choix que nous avons
+fait afin d'implémenter l'algorithme demandé, ainsi que les modifications qui
+ont dû être effectuées.
 
-\subsection{Structure et choix}
+\subsection{Structure du programme}
 
-    La structure globale suit l'algorithme défini dans l'énoncé mais nous allons vous détailler, dans cette partie, certaines partie du programme.
+Nos fonctions \emph{generator()} et \emph{tri()} suivent scrupuleusement
+l'algorithme défini dans l'énoncé. Cependant, nous avions le libre arbitre
+concernant l'implémentation de la fonction \emph{tri()}.
     
-    Avant d'implémenter les fonctions, nous avons de créer des macro-fonction qui permettent de calculer le minimum et le maximum dans le but d'optimiser et de faciliter la compréhension du code. Nous avons aussi mis les tailles des données en static car elles ne doivent pas être modifiées au cours de l'exécution du programme.
-    
-    Pour l'algorithme de tri nous avons choisi le tri à bulles car même si ce n'est pas le plus rapide que l'on connaît aujourd'hui, il est simple à comprendre et à implémenter et il n'a pas besoin de tableau annexe pour que le tri s'effectue. De plus nous avons choisi de nous concentrer sur le parallélisme du programme et la différence de son temps d'exécution suivant les différents critères, non pas sur le temps d'exécution global.
+Pour l'algorithme de tri, nous avons choisi le \emph{tri à bulles} (connu aussi
+sous le nom de \emph{tri par permutation} ou encore \emph{tri par propagation}).
+Nous reviendrons sur ces performances plus tard, mais nous pouvons souligner le
+fait que c'est un tri simple à implémenter et qu'il fait partie de la famille
+des tris en place : il n'a pas besoin de recopier un tableau annexe pour que le
+tri s'effectue. 
 
+\subsection{Adaptation de l'algorithme}
 
-\subsection{Modification de l'algorithme}
+Nous avons rencontré quelques déconvenues avec l'algorithme donné. En effet, une
+fois nos fonctions réalisées et vérifiées, nous avons lancé le programme et le
+résultat obtenu n'était pas le bon. Les valeurs contenues dans les tableaux
+étaient triés mais les tableaux n'étais pas dans l'odre attendu. Nous avons donc
+dû effectuer une légère adaptation : en effet, en C, les indices commencent à $0$
+et non à $1$, comme donné dans l'algorithme.
 
-    Nous avons rencontré quelques déconvenues avec l'algorithme donné. 
-    
-    En effet une fois nos fonctions réalisées et vérifiées nous avons lancé le programme et le résultat obtenu n'était pas le bon. Les valeurs contenues dans les tableaux étaient triés mais pour les tableaux entre cela n'était pas le cas. Nous avons donc dû effectuer de léger changement.
-    
-    Tout d'abord, chaque boucle for commence à 0 et s'arrête à N.
-    Ensuite nous avons supprimé les +1 des variables k, b1 et b2 car les boucles commencent à 0.Et enfin pour b2, le K est devenu k. 
+Tout d'abord, chaque \emph{boucle for} commence à $0$ et s'arrête à $N$. Ensuite
+nous avons supprimé les $+1$ des variables $k$, $b1$ et $b2$ car les boucles
+commencent à 0. Enfin, pour $b2$, le $K$ est devenu $k$ (ce dernier étant une
+correction d'une erreur de l'énoncé). 
 
-    En résumé, k=(j\%2) ; b1=1+(k+2*i)\%N -> b1=(k+2*i)\%N ; b2=1+(K+2*i+1)\%N -> b2=(k+2*i+1)\%N.
+En résumé :
+\begin{itemize}
+    \item $k = 1+(j\bmod 2) \Rightarrow k = (j\bmod 2)$
+    \item $b_1 = 1+(k+2*i)\bmod N \Rightarrow b_1 = (k+2*i)\bmod N$
+    \item $b_2 = 1+(K+2*i+1)\bmodN \Rightarrow b_2 = (k+2*i+1)\bmod N$
+\end{itemize}
 
 \section{Performances}
 
