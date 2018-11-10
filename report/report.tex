@@ -53,8 +53,9 @@
     }
 }
 
-% Symbols package.
+% Symbols and numbers.
 \usepackage{siunitx}
+\usepackage{numprint}
 
 % Formatter package.
 %% Page break between section.
@@ -114,8 +115,8 @@ Plusieurs contraintes nous étaient imposées :
     \item{Nous avions trois fonctions principales à implémenter de la manière suivante :}
         \begin{description}
             \item[generator() :] {remplit un tableau de taille $K$ avec des nombres réels aléatoires;}
-            \item[tri() :] {tri un tableau de taille $K$ ;}
-            \item[tri-merge() :] {à partir de deux tableaux chacun de taille $K$ et trié, renvoie deux tableaux triés vérifiant que toutes les valeurs du premier tableau sont inférieures à celles du deuxième.}
+            \item[tri() :] {trie un tableau de taille $K$ ;}
+            \item[tri-merge() :] {à partir de deux tableaux chacun de taille $K$ et triés, renvoie deux tableaux triés vérifiant que toutes les valeurs du premier tableau sont inférieures à celles du deuxième.}
         \end{description}
 \end{itemize}
 
@@ -147,10 +148,10 @@ résultat obtenu n'était pas le bon. Les valeurs contenues dans les tableaux
 dû effectuer une légère adaptation : en effet, en C, les indices commencent à $0$
 et non à $1$, comme donné dans l'algorithme.
 
-Tout d'abord, chaque \emph{boucle for} commence à $0$ et s'arrête à $N$. Ensuite
-nous avons supprimé les $+1$ des variables $k$, $b1$ et $b2$ car les boucles
-commencent à 0. Enfin, pour $b2$, le $K$ est devenu $k$ (ce dernier étant une
-correction d'une erreur de l'énoncé). 
+Tout d'abord, chaque \emph{boucle for} commence à $0$ et s'arrête à $N-1$.
+Ensuite nous avons supprimé les $+1$ des variables $k$, $b1$ et $b2$ car les
+boucles commencent à 0. Enfin, pour $b2$, le $K$ est devenu $k$ (ce dernier
+étant une correction d'une erreur de l'énoncé). 
 
 En résumé :
 \begin{itemize}
@@ -168,12 +169,13 @@ a une complexité en moyenne en $\mathcal{O}(n^2)$, ce qui est bien moins bon
 qu'un algorithme tel que le \emph{tri rapide} ayant une complexité en moyenne en
 $\mathcal{O}(n.\log n)$. Cependant, étant donné que nous sommes dans une projet
 de programmation parallèle et non d'algorithmique, il y a deux raisons qui
-jusitifie le choix du \emph{tri à bulle} :
+justifient le choix du \emph{tri à bulle} :
 \begin{itemize}
     \item Une \enquote{mauvaise} complexité algorithmique nous permettra de mieux
         mettre en évidence l'importance du parallélisme ;
-    \item L'algorithme parcours de multiples fois le tableau sur toute longueur,
-        ainsi cela va rendre possible la mise en avant des défauts de cache.
+    \item L'algorithme parcours de multiples fois le tableau sur toute sa
+        longueur, ainsi cela va rendre possible la mise en avant des défauts de
+        cache.
 \end{itemize}
 
 \subsection{Mesures}
@@ -194,13 +196,13 @@ Il est important de se rendre compte que si $N < \text{OMP\_NUM\_THREADS}$,
 alors les $\text{OMP\_NUM\_THREADS} - N$ threads ne pourront pas obtenir de
 travail.
 
-De tout les paramètres des trois graphiques suivant, rien n'as été choisi au
+De tous les paramètres des trois graphiques suivants, rien n'as été choisi au
 hasard. Par défaut :
 \begin{itemize}
-        \item OMP\_NUM\_THREADS est égal aux nombre de coeurs de la machine hôte ;
+    \item OMP\_NUM\_THREADS est égal aux nombre de c\oe{}urs de la machine hôte ;
         \item $N$ est calculé à partir d'une formule déterminée empiriquement,
             permettant d'approcher la valeur optimale de $N$ pour un $N*K$ donné
-            après une série de mesures sur une de nos machine ;
+            après une série de mesures sur une de nos machines ;
         \item $K$ prend sa valeur en fonction de $N$.
 \end{itemize}
 
@@ -225,6 +227,24 @@ logarithmiques, avec un facteur 10 entre chaque graduation.
         \label{time-to-data-size}
     \end{center}
 \end{figure}
+
+Comme nous pouvons le constater sur la Figure \ref{time-to-data-size}, le temps
+d'exécution varie énormément en fonction de la taille des données, malgré que
+les 3 paramètres présentés ci-dessus aient été choisis de manière optimale. En
+dessous d'une taille de \numprint{100000} nombres, le temps d'exécution est
+négligeable pour un utilisateur. Cependant, à partir d'une taille d'environ
+\numprint{30000} nombres, nous dépassons définitivement le seuil des
+\numprint{0.01}\si{\second} : cela s'explique par le fait que notre base de
+données ne tient plus dans nos mémoires caches $L_1 \text{ et } L_2$. De plus, à
+partir de ce seuil là se créé une droite de fonction linéaire, avec un
+coefficient directeur environ égal à $1.5$. Cela paraît peu, mais cela n'est pas
+à négliger puisque nous sommes sur des échelles logarithmiques : c'est-à-dire
+que lorsque l'on multiplie la taille de nos données par $10$, le temps
+d'exécution est environ multiplié par $30$. Le temps d'exécution va donc croître
+très rapidement. Par exemple, pour \numprint{1000000} de nombres, nous étions à
+$3\si{\second}$ d'exécution. A \numprint{10000000}, nous étions maintenant à
+$100\si{\second}$. Nous pourrions largement imaginer qu'à \numprint{100000000},
+nous serions à $3000\si{\second}$.
 
 \begin{figure}
     \begin{center}
@@ -251,6 +271,22 @@ logarithmiques, avec un facteur 10 entre chaque graduation.
     \end{center}
 \end{figure}
 
+La Figure \ref{time-to-data-size-and-blocks} nous permet de mesurer l'influence
+du paramètre $N$ sur le temps d'exécution de notre programme. Notez tout d'abord
+que si $N > N*K$, alors le test ne peut pas avoir lieu : nous avons donc des
+courbes qui ne commencent pas à une taille de $10$. Nous observons que pour des
+petites tailles de base de données $(< 100)$, un $N$ petit est optimal.
+Cependant, un $N$ petit montre très vite ses limites et est dépassé par des
+valeurs de $N$ supérieures. En revanche, les grands $N$, dû aux changements
+constant de tableau en cours de traitement, sont nettement moins adaptés pour
+des petites tailles de base de données (le temps d'exécution peut être multiplé
+par $10$ par rapport à un $N$ petit), mais devient très vite optimal pour de
+grandes bases de données $(> \numprint{100000})$. Les différences les plus
+extrêmes de notre graphique se situent à une taille de base de données de
+\numprint{1000000}, où un $N=2$ donne un temps d'exécution de
+\numprint{1000}\si{\second}, tandis qu'un $N=1024$ donne un temps d'exécution de
+\numprint{3}\si{\second} : c'est une différence d'un facteur d'environ $333$ !
+
 \begin{figure}
     \begin{center}
         \begin{tikzpicture}
@@ -276,14 +312,57 @@ logarithmiques, avec un facteur 10 entre chaque graduation.
     \end{center}
 \end{figure}
 
+La Figure \ref{time-to-data-size-and-threads} nous informe de la différence du
+temps d'exécution en fonction du nombre de threads se chargeant du tri. Comme
+attendu, un grand nombre de threads sur un petit nombre de données augmente le
+temps d'exécution dû aux nombreux changements de contextes inutiles. Cependant,
+avoir plusieurs threads devient bénéfique à partir d'une taille comprise entre
+\numprint{1000} et \numprint{10000} nombres. En revanche, nous pouvons remarquer
+que le temps d'exécution est similaire entre $4$ et $64$ threads à partir d'une
+taille d'\numprint{1000000} de données : la cause étant que la machine ne
+disposant que de $4$ c\oe{}urs. Si nous avions un CPU disposant de plus de
+c\oe{}urs, alors nous aurions vu le temps d'exécution continuer de diminuer en
+augmentant le nombre de threads. La différence entre $1$ et $4$ threads pour
+\numprint{1000000} de nombres est tout de même non-négligeable, passant
+respectivement d'un temps d'exécution de $200\si{\second}$ à $100\si{\second}$.
+Nous pourrions nous attendre à un facteur $4$, mais nous n'observons qu'un
+facteur $2$ : l'origine de ce phénomène vient de \emph{l'HyperThreading},
+exposant au système d'exploitation $4$ c\oe{}urs logiques tandis que le CPU ne
+possède seulement que $2$ c\oe{}urs physiques.
+
 \subsection{Perspectives d'amélioration}
     
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua.
+Plusieurs moyens peuvent être mis en \oe{}uvre pour améliorer les performances
+de notre programme :
+\begin{itemize}
+    \item Augmenter le degré de parallélisme : paralléliser de nouvelles
+        boucles, découper notre tableau sur de nouveaux niveaux.
+    \item Améliorer la gestion de la mémoire cache : effectuer des
+        benchmarks pour déterminer la taille précise à partir de laquelle
+        nos \emph{cache miss} augmentent de manière notable.
+    \item Améliorer la complexité algorithmique : utiliser un algorihtme de
+        tri plus efficace (tel que le \emph{tri fusion}, le \emph{tri
+        rapide} ou encore le \emph{tri par tas}).
+\end{itemize}
 
 \section{Conclusion}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua.
+Les mesures de performance de notre programme auront été une tâche intéréssante,
+car plusieurs problématiques ont été introduites pour y répondre convenablement.
+Certains choix n'auront pas été de toute simplicité, tel que le choix de l'échelle
+des axes, du nombre de graphiques, des échantillons représentatifs, etc. De plus,
+nous avons créé un script shell permettant de recréer et/ou modifier nos
+expériences de manière très simple.
+
+Concernant la partie analyse, il a été instructif de comprendre les correlations
+entre les différences de performance induites par chaque paramètre. Nous pouvons
+aussi noter à quel point, sur une machine donnée, un paramètre peut-être bien
+plus important qu'un autre (ici, $N$ est bien plus influant que
+OMP\_NUM\_THREADS).
+
+Nous pouvons donc en conclure que pour obtenir un programme performant, il faut
+à la fois une étude algorithmique poussée pour obtenir la meilleure complexité,
+mais aussi prendre en compte les caractéristiques de l'algorithme qui pourraient
+influencer le matériel.
 
 \end{document}
