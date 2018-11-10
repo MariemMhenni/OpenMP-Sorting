@@ -82,6 +82,9 @@
 % Paragraph.
 \setlength{\parskip}{1ex}
 
+% Quote.
+\usepackage[style=french,french=guillemets]{csquotes}
+
 \begin{document}
 
 \title{Tri parallèle d'un tableau avec OpenMP}
@@ -153,18 +156,56 @@ En résumé :
 \begin{itemize}
     \item $k = 1+(j\bmod 2) \Rightarrow k = (j\bmod 2)$
     \item $b_1 = 1+(k+2*i)\bmod N \Rightarrow b_1 = (k+2*i)\bmod N$
-    \item $b_2 = 1+(K+2*i+1)\bmodN \Rightarrow b_2 = (k+2*i+1)\bmod N$
+    \item $b_2 = 1+(K+2*i+1)\bmod N \Rightarrow b_2 = (k+2*i+1)\bmod N$
 \end{itemize}
 
 \section{Performances}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua.
+Nous allons maintenant discuter des performances de notre programme. D'un
+point de vue algorithmique, dû à notre choix de \emph{tri à bulle}, les
+performances ne devraient pas être excellentes. En effet, le \emph{tri à bulle}
+a une complexité en moyenne en $\mathcal{O}(n^2)$, ce qui est bien moins bon
+qu'un algorithme tel que le \emph{tri rapide} ayant une complexité en moyenne en
+$\mathcal{O}(n.\log n)$. Cependant, étant donné que nous sommes dans une projet
+de programmation parallèle et non d'algorithmique, il y a deux raisons qui
+jusitifie le choix du \emph{tri à bulle} :
+\begin{itemize}
+    \item Une \enquote{mauvaise} complexité algorithmique nous permettra de mieux
+        mettre en évidence l'importance du parallélisme ;
+    \item L'algorithme parcours de multiples fois le tableau sur toute longueur,
+        ainsi cela va rendre possible la mise en avant des défauts de cache.
+\end{itemize}
 
 \subsection{Mesures}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua.
+Avant de commenter nos mesures, il nous semble bon d'expliquer un minimum ce qui
+va suivre. Notre programme voit son comportement modifié par 4 paramètres :
+\begin{description}
+    \item[Taille de la base de données :]{correspond au nombre de tableaux
+        multiplié par la taille d'un tableau $(N*K)$. Il faut multiplier ce
+        nombre par la taille d'un réel double précision pour l'exprimer en
+        octet ;}
+    \item[N :]{nombre de tableaux ;}
+    \item[K :]{taille d'un tableau ;}
+    \item[OMP\_NUM\_THREADS :]{nombre de threads exécutant le programme.}
+\end{description}
+
+Il est important de se rendre compte que si $N < \text{OMP\_NUM\_THREADS}$,
+alors les $\text{OMP\_NUM\_THREADS} - N$ threads ne pourront pas obtenir de
+travail.
+
+De tout les paramètres des trois graphiques suivant, rien n'as été choisi au
+hasard. Par défaut :
+\begin{itemize}
+        \item OMP\_NUM\_THREADS est égal aux nombre de coeurs de la machine hôte ;
+        \item $N$ est calculé à partir d'une formule déterminée empiriquement,
+            permettant d'approcher la valeur optimale de $N$ pour un $N*K$ donné
+            après une série de mesures sur une de nos machine ;
+        \item $K$ prend sa valeur en fonction de $N$.
+\end{itemize}
+
+Enfin, vous noterez que les échelles de nos graphiques sont des échelles
+logarithmiques, avec un facteur 10 entre chaque graduation. 
 
 \begin{figure}
     \begin{center}
